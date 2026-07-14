@@ -185,6 +185,26 @@ def mostrarHistorial(historial):
             print(f"{mov['fecha']:<12}{mov['codigo']:<10}{mov['nombre']:<20}{mov['tipoMovimiento']:<15}{mov['cantidad']:<10}")
     print(100*"=")
 
+# FUNCION MENU
+def Menu():
+    print("\n" + 70 * "#")
+    print("GESTION DE STOCK Y CADUCIDAD DE ABARROTES")
+    print(70 * "#")
+    print("Opcion 1 = Registrar Producto")
+    print("Opcion 2 = Registrar Movimiento (Entrda / Salida)")
+    print("Opcion 3 = Mostrar lista de Productos")
+    print("Opcion 4 = Mostral Historial de movimientos")
+    print("Opcion 5 = Mostrar alertas (Stock bajo / Fecha de vencimiento proxima)")
+    print("Opcion 6 = SALIR")
+    print(70 * "#")
 
+    while True:
+        try:
+            opcion = int(input("Elija una opcion (1-6): "))
+            if opcion >= 1 and opcion <= 6:
+                return opcion
+            else:
+                print("Opcion invalida. Elija un numero entre 1 y 6")
+        except ValueError:
+            print("entrada inválida. Ingrese un numero")
 
-    

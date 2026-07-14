@@ -131,3 +131,33 @@ def registrarMov(productos, historial):
     val = validarOpciones("¿Desea registrar otro movimiento (s = si, n = no)?: ",["s", "n"])
 
 
+# Funciones de Algoritmo de Alertas HU03
+
+def genAlerta(produtos):
+    print("\n" + 50*"=")
+    print("ALERTAS DEL SISTEMA")
+    print("="*50)
+
+    hoy = datetime.now()
+    alerta = False
+
+    for prod in produtos:
+        # alerta de stok minimo
+        if prod["cantidad"] <= StockMinimo:
+            print(f"STOCK POR DEBAJO DE {StockMinimo} unidades. {prod["nombre"]} ({prod["codigo"]}): quedan {prod["cantidad"]} unidades")
+            alerta = True
+
+        # alerta de vencimieto
+        diasParaVenc = (prod["vencimiento"] - hoy).days
+        if 0 <= diasParaVenc <= DiasAlertaVencimiento:
+            print(f"CERCA A LA FECHA DE VENCIMIENTO {prod["nombre"]} ({prod["codigo"]}): vence en {diasParaVenc} dia(s) "
+                  f"{prod["vencimiento"].strftime(FormatoFecha)}")
+            alerta = True
+        elif diasParaVenc < 0:
+            print(f"PRODUCTO VENCIDO {prod["nombre"]} ({prod["codigo"]}); vencio el {prod["vencimiento"].strftime(FormatoFecha)}.")
+            alerta = True
+
+    if not alerta:
+        print("No hay alertas activas.")
+    print(50*"=")
+

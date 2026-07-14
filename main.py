@@ -49,7 +49,7 @@ def validarOpciones(mensaje, opcionesValidas):
         valor = input(mensaje).strip().lower()
         if valor in opcionesValidas:
             return valor
-        print(f"Opción incorrecta. Escriba una de las siguientes: {", ".join(opcionesValidas)}. \n")
+        print(f"Opción incorrecta. Escriba una de las siguientes: {', '.join(opcionesValidas)}. \n")
 
 # funciones para el registro de productos (HU01)
 
@@ -71,12 +71,14 @@ def registrarProductos(productos):
 
         nombre = validarTextoNoVacio("Ingrese nombre del producto: ").capitalize()
         cantidad = validarEnteroPos(0,"Ingrese la cantidad: ")
+        precio = validarRealPos(0.01, "Ingrese el precio unitario en S/. :")
         fechaVenc = validarFecha("ingrese fecha de vencimiento (dd/mm/aaaa)")
 
         nuevoProducto = {
             "codigo": codigo,
             "nombre": nombre,
             "cantidad": cantidad,
+            "precio":precio,
             "vencimiento": fechaVenc
         }
         productos.append(nuevoProducto)
@@ -104,31 +106,33 @@ def registrarMov(productos, historial):
     val = "s"
     while val == "s":
         codigo = validarTextoNoVacio("igrese codigo de producto a buscar: ").upper()
-        produto = buscarProductoCodigo(productos, codigo)
+        producto = buscarProductoCodigo(productos, codigo)
 
-        if produto is None:
+        if producto is None:
             print("No hay productos registrado con el codigo dado. \n")
         else:
             tipoM = validarOpciones("¿Tipo de movimiento a realizar? (e = entrada, s = salida): ", ["e","s"])
             cantMo = validarEnteroPos(1, "Ingrese la cantidad: ")
 
             if tipoM == "e":
-                produto["cantidad"] += cantMo
-                print(f"Entrada de stock registrada. El nuevo stock de {produto['nombre']} es {produto['cantidad']} \n")
+                producto["cantidad"] += cantMo
+                print(f"Entrada de stock registrada. El nuevo stock de {producto['nombre']} es {producto['cantidad']} \n")
             else:
-                producto["cantidad"] -= cantMo
-                print(f"Salida de stock registrada. El nuevo stock de {produto['nombre']} es {produto['cantidad']} \n")
-
-        movimiento = {
-            "fecha": datetime.now().strptime(FormatoFecha),
-            "codigo": produto["codigo"],
-            "nombre": produto["nombre"],
+                if cantMo > producto["cantidad"]:
+                    print(f"No se puede registrar la salida: stock disponible es {producto['cantidad']}. \n")
+                else:
+                    producto["cantidad"] -= cantMo
+                    print(f"Salida de stock registrada. El nuevo stock de {producto['nombre']} es {producto['cantidad']} \n")
+                    
+            movimiento = {
+            "fecha": datetime.now().strftime(FormatoFecha),
+            "codigo": producto["codigo"],
+            "nombre": producto["nombre"],
             "tipoMovimiento": tipoM,
             "cantidad": cantMo
-        }
-        historial.append(movimiento)
-
-    val = validarOpciones("¿Desea registrar otro movimiento (s = si, n = no)?: ",["s", "n"])
+            }
+            historial.append(movimiento)
+        val = validarOpciones("¿Desea registrar otro movimiento (s = si, n = no)?: ",["s", "n"])
 
 
 # Funciones de Algoritmo de Alertas HU03
@@ -171,7 +175,7 @@ def mostrarProd(productos):
         print("No hay productos registrados. ")
     else:
         for prod in productos:
-            print(f"{pro['codigo']:<10}{prod['nombre']:<20}{prod['cantidad']:<10}{prod['precio']:<15.2f}{prod['vencimiento'].strftime(FormatoFecha):<15}")
+            print(f"{prod['codigo']:<10}{prod['nombre']:<20}{prod['cantidad']:<10}{prod['precio']:<15.2f}{prod['vencimiento'].strftime(FormatoFecha):<15}")
     print(100*"=")
 
 def mostrarHistorial(historial):
@@ -208,3 +212,24 @@ def Menu():
         except ValueError:
             print("entrada inválida. Ingrese un numero")
 
+# PROGRAMA PRINCIPAL
+
+productos = [] #será una lista de diccionarios: codigo, nombre, cantidad, preciom, vencimiento
+historial = [] # será una lista de diccionarios: fecha, codigo, nombre, tipoMovimiento, cantidad
+
+while True:
+    selec = Menu()
+
+    if selec == 1:
+        registrarProductos(productos)
+    elif selec == 2:
+        registrarMov(productos, historial)
+    elif selec == 3:
+        mostrarProd(productos)
+    elif selec == 4:
+        mostrarHistorial(historial)
+    elif selec == 5:
+        genAlerta(productos)
+    elif selec == 6:
+        print("ADIOS")
+        break

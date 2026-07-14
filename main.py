@@ -114,10 +114,10 @@ def registrarMov(productos, historial):
 
             if tipoM == "e":
                 produto["cantidad"] += cantMo
-                print(f"Entrada de stock registrada. El nuevo stock de {produto['nombre']} es {produto["cantidad"]} \n")
+                print(f"Entrada de stock registrada. El nuevo stock de {produto['nombre']} es {produto['cantidad']} \n")
             else:
                 producto["cantidad"] -= cantMo
-                print(f"Salida de stock registrada. El nuevo stock de {produto['nombre']} es {produto["cantidad"]} \n")
+                print(f"Salida de stock registrada. El nuevo stock de {produto['nombre']} es {produto['cantidad']} \n")
 
         movimiento = {
             "fecha": datetime.now().strptime(FormatoFecha),
@@ -144,20 +144,47 @@ def genAlerta(produtos):
     for prod in produtos:
         # alerta de stok minimo
         if prod["cantidad"] <= StockMinimo:
-            print(f"STOCK POR DEBAJO DE {StockMinimo} unidades. {prod["nombre"]} ({prod["codigo"]}): quedan {prod["cantidad"]} unidades")
+            print(f"STOCK POR DEBAJO DE {StockMinimo} unidades. {prod['nombre']} ({prod['codigo']}): quedan {prod['cantidad']} unidades")
             alerta = True
 
         # alerta de vencimieto
         diasParaVenc = (prod["vencimiento"] - hoy).days
         if 0 <= diasParaVenc <= DiasAlertaVencimiento:
-            print(f"CERCA A LA FECHA DE VENCIMIENTO {prod["nombre"]} ({prod["codigo"]}): vence en {diasParaVenc} dia(s) "
-                  f"{prod["vencimiento"].strftime(FormatoFecha)}")
+            print(f"CERCA A LA FECHA DE VENCIMIENTO {prod['nombre']} ({prod['codigo']}): vence en {diasParaVenc} dia(s) "
+                  f"{prod['vencimiento'].strftime(FormatoFecha)}")
             alerta = True
         elif diasParaVenc < 0:
-            print(f"PRODUCTO VENCIDO {prod["nombre"]} ({prod["codigo"]}); vencio el {prod["vencimiento"].strftime(FormatoFecha)}.")
+            print(f"PRODUCTO VENCIDO {prod['nombre']} ({prod['codigo']}); vencio el {prod['vencimiento'].strftime(FormatoFecha)}.")
             alerta = True
 
     if not alerta:
         print("No hay alertas activas.")
     print(50*"=")
 
+# Funciones de Salidas de Datos HU04
+def mostrarProd(productos):
+    print("\n" + 100*"=")
+    print(f"{'CODIGO':<10}{'NOMBRE':<20}{'STOCK':<10}{'Precio (S/.)':<15}{'VENCIMIENTO':<15}")
+    print(100*"=")
+
+    if not productos:
+        print("No hay productos registrados. ")
+    else:
+        for prod in productos:
+            print(f"{pro['codigo']:<10}{prod['nombre']:<20}{prod['cantidad']:<10}{prod['precio']:<15.2f}{prod['vencimiento'].strftime(FormatoFecha):<15}")
+    print(100*"=")
+
+def mostrarHistorial(historial):
+    print("\n" + 100*"=")
+    print(f"{'FECHA':<12}{'CODIGO':<10}{'PRODUCTO':<20}{'TIPO DE MOVIMIENTO':<15}{'CANTIDAD':<10}")
+    print(100*"=")
+    if not historial:
+        print("Aún no se han registrado movimientos E/S.")
+    else:
+        for mov in historial:
+            print(f"{mov['fecha']:<12}{mov['codigo']:<10}{mov['nombre']:<20}{mov['tipoMovimiento']:<15}{mov['cantidad']:<10}")
+    print(100*"=")
+
+
+
+    

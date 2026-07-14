@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 def validarTextoNoVacio(mensaje): #valida que se haya ingresado texto
     while True:
         texto = input(mensaje).strip()
@@ -26,3 +28,19 @@ def validarRealPos(minimo, mensaje): #valida que el dato ingresado se un numero 
                 print(f"Error: Debe ser mayor o igual a {minimo}.\n")
         except ValueError:
             print("Error: Ingrese un número real válido.\n")
+
+def validarFecha(mensaje):
+    while True:
+        texto = input(mensaje).strip()
+        try:
+            fecha = datetime.strptime(texto, "%d-%m-%Y")
+            return fecha
+        except ValueError:
+            print("Fecha inválida. Use el formato dd-mm-aaaa \n")
+
+def validarOpciones(mensaje, opcionesValidas):
+    while True:
+        valor = input(mensaje).strip().lower()
+        if valor in opcionesValidas:
+            return valor
+        print(f"Opción incorrecta. Escriba una de las siguientes: {", ".join(opcionesValidas)}. \n")
